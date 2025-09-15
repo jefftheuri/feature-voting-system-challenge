@@ -1,12 +1,12 @@
 # Feature Voting System
 
-A full-stack application that allows users to submit feature requests and vote on them. Built with Express.js backend, SQLite database, React Native mobile app, and vanilla web frontend.
+A full-stack application that allows users to submit feature requests and vote on them. Built with Express.js backend, SQLite database, native Android app (Kotlin), and vanilla web frontend.
 
 ## 🚀 Features
 
 - **User Authentication**: Simple username-based login system
 - **Feature Management**: Create, view, and vote on feature requests
-- **Multi-Platform**: Web frontend and React Native mobile app
+- **Multi-Platform**: Web frontend and native Android app
 - **Real-time Updates**: Vote counts update instantly
 - **Session Management**: Persistent user sessions across platforms
 - **Responsive Design**: Works on desktop, tablet, and mobile
@@ -17,16 +17,17 @@ Before running this application, make sure you have the following installed:
 
 - **Node.js** (v16 or higher)
 - **npm** or **yarn**
-- **Expo CLI** (for mobile app development)
-- **Android Studio** (for Android emulator) or **Xcode** (for iOS simulator)
+- **Android Studio** (for Android development)
+- **Java Development Kit (JDK) 8 or higher**
 
-### React Native Development Environment
+### Android Development Environment
 
-For mobile development, follow the [React Native environment setup guide](https://reactnative.dev/docs/environment-setup):
+For mobile development, you need:
 
-1. Install Android Studio and set up Android SDK
-2. Configure Android Virtual Device (AVD)
-3. For iOS development on macOS, install Xcode
+1. **Android Studio** with Android SDK (API level 24+)
+2. **Android Virtual Device (AVD)** or physical Android device
+3. **JDK 8+** for Kotlin compilation
+4. **Gradle** (included with Android Studio)
 
 ## 🗄️ Database Setup
 
@@ -58,25 +59,32 @@ The server runs on **http://localhost:3000** and provides:
 - API endpoints at `/login`, `/features`, etc.
 - Web frontend at the root path `/`
 
-## 📱 Mobile App Setup and Run
+## 📱 Android App Setup and Run
 
-The React Native app is built with Expo SDK 54:
+The native Android app is built with Kotlin and modern Android architecture:
 
 ```bash
-# Navigate to mobile app directory
-cd mobile-app
+# Navigate to Android app directory
+cd android-app
 
-# Install dependencies
-npm install
+# Open project in Android Studio
+# OR build from command line:
 
-# Start Expo development server
-npm start
+# Build the project
+./gradlew build
 
-# Run on specific platforms
-npm run android  # Android emulator
-npm run ios      # iOS simulator
-npm run web      # Web browser
+# Install on connected device/emulator
+./gradlew installDebug
+
+# Run on Android emulator (if AVD is running)
+./gradlew connectedAndroidTest
 ```
+
+**Using Android Studio:**
+1. Open `android-app` folder in Android Studio
+2. Wait for Gradle sync to complete
+3. Click "Run" button or press Shift+F10
+4. Select your device/emulator
 
 ## 🌐 Web Frontend
 
@@ -284,10 +292,11 @@ curl -b cookies.txt -X DELETE http://localhost:3000/features/1/vote
 3. Create features and vote on them
 4. Verify visual feedback for voted items
 
-### 4. Test Mobile App
-1. Start Expo: `cd mobile-app && npm start`
-2. Open on device/emulator
-3. Test all functionality matches web frontend
+### 4. Test Android App
+1. Open Android Studio and import `android-app` project
+2. Start Android emulator or connect physical device
+3. Run the app and test all functionality
+4. Verify login, feature creation, and voting works properly
 
 ## 📁 Project Structure
 
@@ -300,25 +309,32 @@ feature-voting-system/
 ├── voting_system.db         # SQLite database (created after init)
 ├── web-frontend/
 │   └── index.html           # Vanilla web frontend
-└── mobile-app/
-    ├── package.json         # Mobile app dependencies
-    ├── app.json            # Expo configuration
-    ├── App.js              # Main app component
-    ├── babel.config.js     # Babel configuration
-    ├── components/
-    │   ├── LoginScreen.js
-    │   ├── FeaturesList.js
-    │   └── NewFeatureForm.js
-    ├── services/
-    │   └── api.js          # API service layer
-    └── assets/
-        └── .gitkeep        # Placeholder for assets
+└── android-app/
+    ├── build.gradle         # Project build configuration
+    ├── settings.gradle      # Gradle settings
+    ├── gradle.properties    # Gradle properties
+    └── app/
+        ├── build.gradle     # App module build config
+        ├── proguard-rules.pro
+        └── src/main/
+            ├── AndroidManifest.xml
+            ├── java/com/featurevoting/
+            │   ├── models/      # Data models (Kotlin)
+            │   ├── api/         # Network layer (Retrofit)
+            │   ├── ui/          # Activities & ViewModels
+            │   └── utils/       # Utilities (SharedPrefs)
+            └── res/             # Android resources
+                ├── layout/      # XML layouts
+                ├── values/      # Colors, themes, strings
+                ├── menu/        # Menu resources
+                ├── drawable/    # Icons and drawables
+                └── xml/         # Backup & data extraction rules
 ```
 
 ## 🚧 Known Limitations
 
 1. **Authentication**: Uses simple username-based auth (no passwords)
-2. **Assets**: Mobile app uses default colors instead of custom icons
+2. **Platform**: Android app only (no iOS version)
 3. **Real-time**: No WebSocket updates (manual refresh required)
 4. **File Storage**: SQLite database in single file
 5. **Error Handling**: Basic error messages (could be more detailed)
@@ -333,13 +349,15 @@ feature-voting-system/
 - [ ] Add user profile management
 - [ ] Create custom app icons and splash screens
 - [ ] Add feature categories/tags
+- [ ] Develop iOS version of the app
 
 ### Medium Term
 - [ ] Real-time updates with WebSocket
-- [ ] Push notifications for mobile app
+- [ ] Push notifications for Android app
 - [ ] Feature commenting system
 - [ ] User roles and permissions
 - [ ] Feature status tracking (planned, in progress, completed)
+- [ ] Offline support for Android app
 
 ### Long Term
 - [ ] Email notifications
@@ -349,6 +367,7 @@ feature-voting-system/
 - [ ] Database migration to PostgreSQL
 - [ ] Docker containerization
 - [ ] CI/CD pipeline
+- [ ] Cross-platform mobile framework migration
 
 ## 🤝 Contributing
 

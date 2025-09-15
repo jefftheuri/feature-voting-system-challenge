@@ -70,3 +70,8 @@ Create a comprehensive README.md with:
 7. Database schema diagram or description
 8. Testing instructions with sample curl commands
 9. Known limitations or future improvements
+i want you to redo the mobile app completely but specifically for android only using kotlin. redo every thing to work for android only
+Please check why there is an error of [runtime not ready]: Invariant violation: TurboModuleRegistry.getEnforcing PlatformConstraints could not be found. that is the mobile app
+please update the readme file as we are now using kotlin for android
+push the updates to github
+push prompts.txt as well to repo

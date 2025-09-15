@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Voting System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Login Section */
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            margin-left: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* Features List */
+        .feature-item {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .feature-item.voted {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .feature-author {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .feature-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vote-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vote-count {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .vote-btn {
+            background: #28a745;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .vote-btn.voted {
+            background: #dc3545;
+        }
+
+        .vote-btn.voted:hover {
+            background: #c82333;
+        }
+
+        .vote-btn:hover {
+            background: #218838;
+        }
+
+        /* Add Feature Form */
+        .add-feature-form {
+            max-width: 600px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-info {
+            text-align: right;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .feature-header {
+                flex-direction: column;
+            }
+
+            .feature-actions {
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Feature Voting System</h1>
+            <p>Vote for your favorite features and submit new ideas!</p>
+        </header>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="section">
+            <h2>Login</h2>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <button onclick="login()" id="loginBtn">Login</button>
+            </div>
+        </div>
+
+        <!-- Main App (hidden until logged in) -->
+        <div id="appSection" class="hidden">
+            <div class="section">
+                <div class="user-info">
+                    Welcome, <strong id="currentUsername"></strong>!
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Features List -->
+            <div class="section">
+                <h2>Features</h2>
+                <button onclick="loadFeatures()" style="margin-bottom: 15px;">Refresh</button>
+                <div id="featuresList"></div>
+            </div>
+
+            <!-- Add Feature Form -->
+            <div class="section">
+                <h2>Add New Feature</h2>
+                <div class="add-feature-form">
+                    <div class="form-group">
+                        <label for="featureTitle">Title:</label>
+                        <input type="text" id="featureTitle" placeholder="Enter feature title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="featureDescription">Description:</label>
+                        <textarea id="featureDescription" placeholder="Describe your feature idea..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="addFeature()" id="addFeatureBtn">Add Feature</button>
+                        <button onclick="clearForm()" type="button" style="background: #6c757d;">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        let currentUser = null;
+        let userVotes = new Set();
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+
+            // Allow Enter key to submit forms
+            document.getElementById('username').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') login();
+            });
+
+            document.getElementById('featureTitle').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addFeature();
+            });
+        });
+
+        // Check if user is already logged in
+        function checkAuthStatus() {
+            const userId = localStorage.getItem('userId');
+            const username = localStorage.getItem('username');
+
+            if (userId && username) {
+                currentUser = { userId: parseInt(userId), username };
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login section
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+        }
+
+        // Show main app
+        function showApp() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('currentUsername').textContent = currentUser.username;
+            loadFeatures();
+        }
+
+        // Login function
+        async function login() {
+            const username = document.getElementById('username').value.trim();
+
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username }),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Login failed');
+                }
+
+                const data = await response.json();
+
+                // Store user data
+                localStorage.setItem('userId', data.user_id);
+                localStorage.setItem('username', data.username);
+                currentUser = { userId: data.user_id, username: data.username };
+
+                showApp();
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            currentUser = null;
+            userVotes.clear();
+            document.getElementById('username').value = '';
+            showLogin();
+        }
+
+        // Load features from API
+        async function loadFeatures() {
+            const featuresList = document.getElementById('featuresList');
+            featuresList.innerHTML = '<p style="text-align: center; color: #6c757d;">Loading features...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/features`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load features');
+                }
+
+                const features = await response.json();
+
+                // Load user's votes
+                await loadUserVotes(features);
+
+                displayFeatures(features);
+            } catch (error) {
+                featuresList.innerHTML = `<p style="color: red; text-align: center;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Load user's votes by attempting to vote and checking for conflicts
+        async function loadUserVotes(features) {
+            userVotes.clear();
+
+            for (const feature of features) {
+                try {
+                    // Try to vote, if it fails with conflict, user already voted
+                    await fetch(`${API_BASE}/features/${feature.id}/vote`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    // If successful, remove the vote we just added
+                    await fetch(`${API_BASE}/features/${feature.id}/vote`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                } catch (error) {
+                    // If it failed due to conflict, user had already voted
+                    const response = await fetch(`${API_BASE}/features/${feature.id}/vote`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok && response.status === 409) {
+                        userVotes.add(feature.id);
+                    }
+                }
+            }
+        }
+
+        // Display features
+        function displayFeatures(features) {
+            const featuresList = document.getElementById('featuresList');
+
+            if (features.length === 0) {
+                featuresList.innerHTML = '<div class="empty-state">No features yet. Be the first to add one!</div>';
+                return;
+            }
+
+            featuresList.innerHTML = features.map(feature => {
+                const hasVoted = userVotes.has(feature.id);
+                return `
+                    <div class="feature-item ${hasVoted ? 'voted' : ''}" id="feature-${feature.id}">
+                        <div class="feature-header">
+                            <div>
+                                <div class="feature-title">${escapeHtml(feature.title)}</div>
+                                <div class="feature-author">by ${escapeHtml(feature.creator)}</div>
+                            </div>
+                        </div>
+                        ${feature.description ? `<div class="feature-description">${escapeHtml(feature.description)}</div>` : ''}
+                        <div class="feature-actions">
+                            <div class="vote-info">
+                                <span class="vote-count">${feature.vote_count}</span>
+                                <span>vote${feature.vote_count !== 1 ? 's' : ''}</span>
+                            </div>
+                            <button class="vote-btn ${hasVoted ? 'voted' : ''}"
+                                    onclick="toggleVote(${feature.id})"
+                                    id="vote-btn-${feature.id}">
+                                ${hasVoted ? 'Remove Vote' : 'Vote'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Toggle vote for a feature
+        async function toggleVote(featureId) {
+            const voteBtn = document.getElementById(`vote-btn-${featureId}`);
+            const featureItem = document.getElementById(`feature-${featureId}`);
+            const hasVoted = userVotes.has(featureId);
+
+            voteBtn.disabled = true;
+            voteBtn.textContent = hasVoted ? 'Removing...' : 'Voting...';
+            featureItem.classList.add('loading');
+
+            try {
+                const method = hasVoted ? 'DELETE' : 'POST';
+                const response = await fetch(`${API_BASE}/features/${featureId}/vote`, {
+                    method,
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Vote failed');
+                }
+
+                // Update local state
+                if (hasVoted) {
+                    userVotes.delete(featureId);
+                } else {
+                    userVotes.add(featureId);
+                }
+
+                // Reload features to get updated counts
+                await loadFeatures();
+            } catch (error) {
+                alert('Vote failed: ' + error.message);
+                voteBtn.disabled = false;
+                voteBtn.textContent = hasVoted ? 'Remove Vote' : 'Vote';
+                featureItem.classList.remove('loading');
+            }
+        }
+
+        // Add new feature
+        async function addFeature() {
+            const title = document.getElementById('featureTitle').value.trim();
+            const description = document.getElementById('featureDescription').value.trim();
+
+            if (!title) {
+                alert('Please enter a feature title');
+                return;
+            }
+
+            const addBtn = document.getElementById('addFeatureBtn');
+            addBtn.disabled = true;
+            addBtn.textContent = 'Adding...';
+
+            try {
+                const response = await fetch(`${API_BASE}/features`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, description }),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to add feature');
+                }
+
+                clearForm();
+                await loadFeatures();
+                alert('Feature added successfully!');
+            } catch (error) {
+                alert('Failed to add feature: ' + error.message);
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = 'Add Feature';
+            }
+        }
+
+        // Clear the add feature form
+        function clearForm() {
+            document.getElementById('featureTitle').value = '';
+            document.getElementById('featureDescription').value = '';
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

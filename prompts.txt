@@ -1,0 +1,72 @@
+Write each prompt I send to you into a file prompts.txt, so I can audit the work.
+mkdir feature-voting-system && cd feature-voting-system
+Create a Feature Voting System with the following components:
+1. SQLite database with tables for:
+   - users (id, username, email, created_at)
+   - features (id, title, description, created_at, user_id)
+   - votes (id, feature_id, user_id, created_at) with unique constraint on (feature_id, user_id)
+2. Express.js backend with endpoints for:
+   - POST /login (simple auth, return user_id)
+   - GET /features (list all features with vote counts and user info)
+   - POST /features (create new feature, requires user_id)
+   - POST /features/:id/vote (upvote a feature, requires user_id)
+   - DELETE /features/:id/vote (remove vote, requires user_id)
+3. Include package.json with all dependencies
+4. Add simple session/auth middleware to track current user
+curl -c cookies.txt -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "alice"}'
+[Request interrupted by user for tool use]Please note our API endpoints are:
+
+POST /login (not /api/login)
+GET /features (not /api/features)
+POST /features (not /api/features)
+POST /features/:id/vote (not /api/features/:id/vote)
+DELETE /features/:id/vote (not /api/features/:id/vote)
+Our API endpoints are working well. So we proceed to:
+Add the React Native mobile app that:
+
+1. Has a simple login screen (just username, store user_id locally)
+2. Lists all features showing: title, description, author, vote count
+3. Has a form to submit new features (requires logged-in user)
+4. Allows users to upvote/remove vote on features (visual feedback for voted items)
+5. Shows which features the current user has voted for
+6. Connects to the Express backend API at localhost:3000
+Create a simple web frontend for the Feature Voting System:
+1. Use vanilla HTML/CSS/JavaScript (no build process needed)
+2. Single-page app with three sections:
+   - Login: Username input that stores user_id in localStorage
+   - Feature List: Shows all features with title, author, votes, and upvote/downvote buttons
+   - Add Feature: Simple form with title and description fields
+3. Connect to backend API at http://localhost:3000
+4. Handle errors (show alerts for failed requests)
+5. Visual feedback: Voted features show in different color, disable vote button during request
+6. Make it functional - basic CSS only
+Let's serve frontend and backend from same server to avoid CORS issue
+is it possible for you to change mobile app from sdk49 to sdk54? Yes or No
+please proceed and update accordingly to SDK 54 without losing any functionalities
+I am getting an error:
+
+Logs for your project will appear below. Press Ctrl+C to exit.
+Unable to resolve asset "./assets/icon.png" from "icon" in your app.json or app.config.js
+iOS Bundling failed 400ms node_modules/expo/AppEntry.js (1 module)
+ ERROR  node_modules/expo/AppEntry.js: Cannot find module 'babel-preset-expo'
+Require stack:
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/@babel/core/lib/config/files/plugins.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/@babel/core/lib/config/files/index.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/@babel/core/lib/index.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/metro-transform-worker.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/transform-worker.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/metro/src/DeltaBundler/Worker.flow.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/metro/src/DeltaBundler/Worker.js
+- /home/cobraball/metacto/feature-voting-system/mobile-app/node_modules/jest-worker/build/workers/processChild.js
+Create a comprehensive README.md with:
+1. Project overview and features
+2. Prerequisites (Node.js, React Native setup, Android emulator)
+3. Database setup instructions (initialize SQLite)
+4. Backend setup and run instructions (include port info)
+5. Mobile app setup and run instructions
+6. API documentation with example requests/responses for all endpoints
+7. Database schema diagram or description
+8. Testing instructions with sample curl commands
+9. Known limitations or future improvements
